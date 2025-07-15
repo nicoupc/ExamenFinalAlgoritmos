@@ -42,7 +42,7 @@ namespace ExamenFinalAlgoritmos {
 			for (int i = 0; i < cantidad; i++) {
 				int px = r->Next(0, this->ClientSize.Width - 60);
 				int py = r->Next(0, this->ClientSize.Height - 60);
-				enfermos->Add(gcnew CEnfermo("Enfermo.jpg", px, py, r->Next(4, 7)));
+				enfermos->Add(gcnew CEnfermo("Enfermo.jpg", px, py, r->Next(4, 10)));
 			}
 		}
 
@@ -131,8 +131,9 @@ namespace ExamenFinalAlgoritmos {
 			e->mover(this->ClientSize.Width, this->ClientSize.Height);
 			e->dibujar(buffer);
 
-			if (e->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
-				enfermera->reducirVidas(); // Podés controlar la frecuencia si querés
+			if (!enfermera->estaInvulnerable() && e->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
+				enfermera->reducirVidas();
+				enfermera->activarInvulnerabilidad();
 			}
 		}
 

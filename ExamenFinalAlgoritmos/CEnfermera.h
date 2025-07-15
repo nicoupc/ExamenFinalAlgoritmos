@@ -14,6 +14,9 @@ private:
 	DireccionEnfermera direccion;
 	DireccionEnfermera ultimaDireccion;
 	Bitmap^ imagen;
+	bool invulnerable = false;
+	DateTime tiempoInvulnerabilidad = DateTime::MinValue;
+	int parpadeo = 0;
 
 public:
 	CEnfermera() {
@@ -68,6 +71,15 @@ public:
 	}
 
 	void dibujar(BufferedGraphics^ buffer) {
+		// Evaluar si está parpadeando antes de dibujar
+		if (estaInvulnerable()) {
+			parpadeo++;
+			if ((parpadeo / 2) % 2 == 0) {
+				// No dibujamos para generar efecto parpadeo
+				return;
+			}
+		}
+
 		Rectangle origen = Rectangle(indiceX * ancho, indiceY * alto, ancho, alto);
 		Rectangle destino = Rectangle(x, y, ancho, alto);
 
@@ -76,6 +88,12 @@ public:
 		// Dibujar rectangulo rojo para colisiones si queres visualizarlo
 		Pen^ pen = gcnew Pen(Color::Red, 2);
 		buffer->Graphics->DrawRectangle(pen, obtenerRectangulo());
+
+		// Reset de invulnerabilidad si ya pasó el tiempo
+		if (invulnerable && (DateTime::Now - tiempoInvulnerabilidad).TotalMilliseconds >= 1000) {
+			invulnerable = false;
+			parpadeo = 0;
+		}
 	}
 
 	Rectangle obtenerRectangulo() {
@@ -95,4 +113,14 @@ public:
 	int getVidas() { return vidas; }
 
 	DireccionEnfermera getUltimaDireccion() { return ultimaDireccion; }
+
+	bool estaInvulnerable() {
+		return invulnerable && (DateTime::Now - tiempoInvulnerabilidad).TotalMilliseconds < 2000;
+	}
+
+	void activarInvulnerabilidad() {
+		invulnerable = true;
+		tiempoInvulnerabilidad = DateTime::Now;
+		parpadeo = 0;
+	}
 };
