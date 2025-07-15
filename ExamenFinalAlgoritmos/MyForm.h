@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CEnfermera.h"
+#include "CEnfermo.h"
 
 namespace ExamenFinalAlgoritmos {
 
@@ -10,6 +11,7 @@ namespace ExamenFinalAlgoritmos {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Collections::Generic; // Para List<>
 
 	/// <summary>
 	/// Summary for MyForm
@@ -22,6 +24,7 @@ namespace ExamenFinalAlgoritmos {
 		Label^ lblContador;
 		DateTime tiempoInicio;
 		int contador = 0;
+		List<CEnfermo^>^ enfermos;
 
 	public:
 		MyForm(void)
@@ -32,6 +35,15 @@ namespace ExamenFinalAlgoritmos {
 			//
 			enfermera = gcnew CEnfermera();
 			tiempoInicio = DateTime::Now;
+
+			enfermos = gcnew List<CEnfermo^>();
+			Random^ r = gcnew Random();
+			int cantidad = r->Next(5, 8);
+			for (int i = 0; i < cantidad; i++) {
+				int px = r->Next(0, this->ClientSize.Width - 60);
+				int py = r->Next(0, this->ClientSize.Height - 60);
+				enfermos->Add(gcnew CEnfermo("Enfermo.jpg", px, py, r->Next(4, 7)));
+			}
 		}
 
 	protected:
@@ -114,6 +126,15 @@ namespace ExamenFinalAlgoritmos {
 		enfermera->mover(this->ClientSize.Width, this->ClientSize.Height);
 
 		enfermera->dibujar(buffer);
+
+		for each (CEnfermo ^ e in enfermos) {
+			e->mover(this->ClientSize.Width, this->ClientSize.Height);
+			e->dibujar(buffer);
+
+			if (e->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
+				enfermera->reducirVidas(); // Podés controlar la frecuencia si querés
+			}
+		}
 
 		// Vidas – esquina superior derecha
 		lblVidas->Location = Point(this->ClientSize.Width - lblVidas->PreferredWidth - 10, 10);

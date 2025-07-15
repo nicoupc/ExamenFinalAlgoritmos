@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CEnfermera.h" />
+    <ClInclude Include="CEnfermo.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
