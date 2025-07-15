@@ -42,7 +42,7 @@ namespace ExamenFinalAlgoritmos {
 			for (int i = 0; i < cantidad; i++) {
 				int px = r->Next(0, this->ClientSize.Width - 60);
 				int py = r->Next(0, this->ClientSize.Height - 60);
-				enfermos->Add(gcnew CEnfermo("Enfermo.jpg", px, py, r->Next(4, 10)));
+				enfermos->Add(gcnew CEnfermo("Enfermo.jpg", px, py, r->Next(4, 13)));
 			}
 		}
 
@@ -150,6 +150,15 @@ namespace ExamenFinalAlgoritmos {
 
 		lblContador->Location = Point(10, 10);
 		lblContador->Text = "Tiempo: " + segundos + "s";
+
+		if (enfermera->getVidas() <= 0) {
+			timer1->Stop(); // Detener el juego
+
+			MessageBox::Show("VIRUS EXTREMO", "FIN DEL JUEGO", MessageBoxButtons::OK, MessageBoxIcon::Error);
+
+			Application::Exit(); // Cierra la aplicación
+			return;
+		}
 
 		// Mostrar el dibujo
 		buffer->Render();
