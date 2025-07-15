@@ -37,6 +37,7 @@ namespace ExamenFinalAlgoritmos {
 		Label^ lblCurados;
 		Bitmap^ sprite;
 		Bitmap^ imagenCurado;
+		bool mostrarVictoria = false;
 
 	public:
 		MyForm(void)
@@ -153,7 +154,7 @@ namespace ExamenFinalAlgoritmos {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(900, 600);
+			this->ClientSize = System::Drawing::Size(1000, 600);
 			this->Name = L"MyForm";
 			this->Text = L"Virus 2035.10";
 			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::presionarTecla);
@@ -264,14 +265,17 @@ namespace ExamenFinalAlgoritmos {
 		}
 
 		if (todosCurados) {
-			timer1->Stop();
-			MessageBox::Show("MISION CUMPLIDA", "¡Felicidades!", MessageBoxButtons::OK, MessageBoxIcon::Information);
-			Application::Exit();
-			return;
+			mostrarVictoria = true;
 		}
 
 		// Mostrar el dibujo
 		buffer->Render();
+
+		if (mostrarVictoria) {
+			timer1->Stop();
+			MessageBox::Show("MISION CUMPLIDA", "¡Felicidades!", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			Application::Exit();
+		}
 
 		// Liberar recursos
 		delete buffer;
