@@ -18,18 +18,18 @@ private:
 public:
 	CEnfermera() {
 		// Inicializar variables
+		imagen = gcnew Bitmap("Enfermera.png");
+
 		x = 100;
 		y = 100;
-		//ancho = 32;
-		//alto = 48;
+
 		indiceX = 0;
 		indiceY = 0;
 
 		velocidad = 15;
+
 		direccion = Ninguna;
 		ultimaDireccion = Abajo;
-
-		imagen = gcnew Bitmap("Enfermera.png");
 
 		int columnas = 4;
 		int filas = 4;
@@ -41,35 +41,23 @@ public:
 
 	void mover(int anchoVentana, int altoVentana)
 	{
-		switch (direccion) {
-		case Abajo:
-			indiceY = 0;
+		// Si la enfermera se está moviendo
+		if (direccion != Ninguna) {
 			indiceX = (indiceX + 1) % 4;
-			y += velocidad;
-			ultimaDireccion = Abajo;
-			break;
-		case Izquierda:
-			indiceY = 1;
-			indiceX = (indiceX + 1) % 4;
-			x -= velocidad;
-			ultimaDireccion = Izquierda;
-			break;
-		case Derecha:
-			indiceY = 2;
-			indiceX = (indiceX + 1) % 4;
-			x += velocidad;
-			ultimaDireccion = Derecha;
-			break;
-		case Arriba:
-			indiceY = 3;
-			indiceX = (indiceX + 1) % 4;
-			y -= velocidad;
-			ultimaDireccion = Arriba;
-			break;
-		case Ninguna:
+			indiceY = static_cast<int>(direccion) - 1;
+			ultimaDireccion = direccion;
+
+			switch (direccion) {
+			case Abajo:    y += velocidad; break;
+			case Arriba:   y -= velocidad; break;
+			case Izquierda:x -= velocidad; break;
+			case Derecha:  x += velocidad; break;
+			}
+		}
+		// Si está quieta, se mantiene en la última dirección
+		else {
 			indiceX = 0;
 			indiceY = static_cast<int>(ultimaDireccion) - 1;
-			break;
 		}
 
 		// Limitar movimiento dentro de la ventana

@@ -18,6 +18,10 @@ namespace ExamenFinalAlgoritmos {
 	{
 	private:
 		CEnfermera^ enfermera;
+		Label^ lblVidas;
+		Label^ lblContador;
+		DateTime tiempoInicio;
+		int contador = 0;
 
 	public:
 		MyForm(void)
@@ -27,6 +31,7 @@ namespace ExamenFinalAlgoritmos {
 			//TODO: Add the constructor code here
 			//
 			enfermera = gcnew CEnfermera();
+			tiempoInicio = DateTime::Now;
 		}
 
 	protected:
@@ -65,14 +70,35 @@ namespace ExamenFinalAlgoritmos {
 			// 
 			this->timer1->Enabled = true;
 			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
+			//
+			// Labels for Vidas
+			//
+			this->lblVidas = gcnew Label();
+			this->lblVidas->AutoSize = true;
+			this->lblVidas->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
+			this->lblVidas->ForeColor = Color::Red;
+			this->lblVidas->BackColor = Color::Transparent;
+			this->lblVidas->Text = "Vidas: ";
+			this->Controls->Add(this->lblVidas);
+			//
+			// Labels for Contador
+			//
+			this->lblContador = gcnew Label();
+			this->lblContador->AutoSize = true;
+			this->lblContador->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
+			this->lblContador->ForeColor = Color::Black;
+			this->lblContador->BackColor = Color::Transparent;
+			this->lblContador->Text = "Contador: ";
+			this->Controls->Add(this->lblContador);
+
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(800, 500);
+			this->ClientSize = System::Drawing::Size(900, 600);
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Virus 2035.10";
 			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::presionarTecla);
 			this->KeyUp += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::soltarTecla);
 			this->ResumeLayout(false);
@@ -88,6 +114,20 @@ namespace ExamenFinalAlgoritmos {
 		enfermera->mover(this->ClientSize.Width, this->ClientSize.Height);
 
 		enfermera->dibujar(buffer);
+
+		// Vidas – esquina superior derecha
+		lblVidas->Location = Point(this->ClientSize.Width - lblVidas->PreferredWidth - 10, 10);
+
+		// Contador – esquina superior izquierda
+		lblContador->Location = Point(10, 10);
+
+		lblVidas->Text = "Vidas: " + enfermera->getVidas();
+
+		TimeSpan tiempoTranscurrido = DateTime::Now - tiempoInicio;
+		int segundos = tiempoTranscurrido.Seconds + tiempoTranscurrido.Minutes * 60;
+
+		lblContador->Location = Point(10, 10);
+		lblContador->Text = "Tiempo: " + segundos + "s";
 
 		// Mostrar el dibujo
 		buffer->Render();
