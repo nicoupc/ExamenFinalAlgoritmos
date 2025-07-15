@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdlib> // para rand
+
 using namespace System;
 using namespace System::Drawing;
 

@@ -29,5 +29,11 @@
     <ClInclude Include="CEnfermo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CVacuna.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CVacunaDisparada.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
