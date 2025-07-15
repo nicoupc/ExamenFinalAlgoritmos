@@ -40,11 +40,12 @@ public:
     void dibujar(BufferedGraphics^ buffer) {
         buffer->Graphics->DrawImage(imagen, Rectangle(x, y, ancho, alto));
 		// Si estás depurando colisiones, activa la línea siguiente:
-		buffer->Graphics->DrawRectangle(Pens::Red, Rectangle(x, y, ancho, alto));
+		//buffer->Graphics->DrawRectangle(Pens::Red, Rectangle(x, y, ancho, alto));
     }
 
     Rectangle getRectangulo() {
-        return Rectangle(x, y, ancho, alto);
+        int margen = 5;
+        return Rectangle(x + margen, y + margen, ancho - 2 * margen, alto - 2 * margen);
     }
 
     int getX() { return x; }

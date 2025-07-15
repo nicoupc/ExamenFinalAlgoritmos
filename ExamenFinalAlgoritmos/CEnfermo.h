@@ -60,11 +60,13 @@ public:
 		Rectangle destino = Rectangle(x, y, ancho, alto);
 		buffer->Graphics->DrawImage(bmp, destino, origen, GraphicsUnit::Pixel);
 		// Si quieres ver el rectángulo de colisión, descomenta la siguiente línea
-		buffer->Graphics->DrawRectangle(gcnew Pen(Color::Red, 2), getRectangulo());
+		//buffer->Graphics->DrawRectangle(gcnew Pen(Color::Red, 2), getRectangulo());
 	}
 
 	Rectangle getRectangulo() {
-		return Rectangle(x, y, ancho, alto); // margen para colisiones
+		int margenX = ancho * 0.2;
+		int margenY = alto * 0.2;
+		return Rectangle(x + margenX, y + margenY, ancho - 2 * margenX, alto - 2 * margenY);
 	}
 
 	void curar(Bitmap^ nuevaImagen) {

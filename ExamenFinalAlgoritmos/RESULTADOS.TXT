@@ -1,0 +1,5 @@
+Estado final: MISION CUMPLIDA
+Enfermos curados: 5
+Vacunas recogidas: 2
+Vidas restantes: 2
+Tiempo total de juego: 38.36 segundos

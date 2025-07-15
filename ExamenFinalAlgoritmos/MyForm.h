@@ -16,6 +16,7 @@ namespace ExamenFinalAlgoritmos {
 	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace System::Collections::Generic; // Para List<>
+	using namespace System::IO; // Para StreamWriter
 
 	/// <summary>
 	/// Summary for MyForm
@@ -38,6 +39,19 @@ namespace ExamenFinalAlgoritmos {
 		Bitmap^ sprite;
 		Bitmap^ imagenCurado;
 		bool mostrarVictoria = false;
+
+		void guardarResultados(String^ estadoFinal) {
+			DateTime tiempoFin = DateTime::Now;
+			double segundosTotales = (tiempoFin - tiempoInicio).TotalSeconds;
+
+			StreamWriter^ writer = gcnew StreamWriter("RESULTADOS.TXT", false);
+			writer->WriteLine("Estado final: " + estadoFinal);
+			writer->WriteLine("Enfermos curados: " + contadorCurados);
+			writer->WriteLine("Vacunas recogidas: " + inventarioVacunas);
+			writer->WriteLine("Vidas restantes: " + enfermera->getVidas());
+			writer->WriteLine("Tiempo total de juego: " + segundosTotales.ToString("F2") + " segundos");
+			writer->Close();
+		}
 
 	public:
 		MyForm(void)
@@ -171,8 +185,6 @@ namespace ExamenFinalAlgoritmos {
 
 		enfermera->mover(this->ClientSize.Width, this->ClientSize.Height);
 
-		enfermera->dibujar(buffer);
-
 		for (int i = vacunas->Count - 1; i >= 0; i--) {
 			if (vacunas[i]->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
 				vacunas->RemoveAt(i);
@@ -228,6 +240,8 @@ namespace ExamenFinalAlgoritmos {
 			}
 		}
 
+		enfermera->dibujar(buffer);
+
 		// Vidas – esquina superior derecha
 		lblVidas->Location = Point(this->ClientSize.Width - lblVidas->PreferredWidth - 10, 10);
 
@@ -250,6 +264,7 @@ namespace ExamenFinalAlgoritmos {
 		if (enfermera->getVidas() <= 0) {
 			timer1->Stop(); // Detener el juego
 
+			guardarResultados("VIRUS EXTREMO");
 			MessageBox::Show("VIRUS EXTREMO", "FIN DEL JUEGO", MessageBoxButtons::OK, MessageBoxIcon::Error);
 
 			Application::Exit(); // Cierra la aplicación
@@ -273,6 +288,7 @@ namespace ExamenFinalAlgoritmos {
 
 		if (mostrarVictoria) {
 			timer1->Stop();
+			guardarResultados("MISION CUMPLIDA");
 			MessageBox::Show("MISION CUMPLIDA", "¡Felicidades!", MessageBoxButtons::OK, MessageBoxIcon::Information);
 			Application::Exit();
 		}

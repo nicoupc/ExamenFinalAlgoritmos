@@ -23,8 +23,8 @@ public:
 		// Inicializar variables
 		imagen = gcnew Bitmap("Enfermera.png");
 
-		x = 100;
-		y = 100;
+		x = 350;
+		y = 200;
 
 		indiceX = 0;
 		indiceY = 0;
@@ -86,8 +86,8 @@ public:
 		buffer->Graphics->DrawImage(imagen, destino, origen, GraphicsUnit::Pixel);
 
 		// Dibujar rectangulo rojo para colisiones si queres visualizarlo
-		Pen^ pen = gcnew Pen(Color::Red, 2);
-		buffer->Graphics->DrawRectangle(pen, obtenerRectangulo());
+		//Pen^ pen = gcnew Pen(Color::Red, 2);
+		//buffer->Graphics->DrawRectangle(pen, obtenerRectangulo());
 
 		// Reset de invulnerabilidad si ya pasó el tiempo
 		if (invulnerable && (DateTime::Now - tiempoInvulnerabilidad).TotalMilliseconds >= 1000) {
@@ -97,7 +97,8 @@ public:
 	}
 
 	Rectangle obtenerRectangulo() {
-		return Rectangle(x, y, ancho, alto);
+		int margen = 5;
+		return Rectangle(x + margen, y + margen, ancho - 2 * margen, alto - 2 * margen);
 	}
 
 	void setDireccion(DireccionEnfermera nueva) {
