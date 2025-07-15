@@ -33,6 +33,10 @@ namespace ExamenFinalAlgoritmos {
 		int inventarioVacunas = 0;
 		Label^ lblVacunas;
 		List<CVacunaDisparada^>^ vacunasDisparadas;
+		int contadorCurados = 0;
+		Label^ lblCurados;
+		Bitmap^ sprite;
+		Bitmap^ imagenCurado;
 
 	public:
 		MyForm(void)
@@ -47,6 +51,9 @@ namespace ExamenFinalAlgoritmos {
 			enfermera = gcnew CEnfermera();
 			tiempoInicio = DateTime::Now;
 
+			sprite = gcnew Bitmap("Enfermo.jpg");
+			imagenCurado = gcnew Bitmap("Curado.jpg");
+
 			// Crear enfermos
 			enfermos = gcnew List<CEnfermo^>();
 			int cantidad = 5 + rand() % 3; // entre 5 y 7
@@ -55,7 +62,7 @@ namespace ExamenFinalAlgoritmos {
 				int px = rand() % (this->ClientSize.Width - 60);
 				int py = rand() % (this->ClientSize.Height - 60);
 				int velocidad = 4 + rand() % 9; // entre 4 y 12
-				enfermos->Add(gcnew CEnfermo("Enfermo.jpg", px, py, velocidad));
+				enfermos->Add(gcnew CEnfermo(sprite, px, py, velocidad));
 			}
 
 			// Crear vacunas
@@ -133,6 +140,14 @@ namespace ExamenFinalAlgoritmos {
 			this->lblVacunas->BackColor = Color::Transparent;
 			this->lblVacunas->Text = "Vacunas: 0";
 			this->Controls->Add(this->lblVacunas);
+			// Label for contador de curados
+			lblCurados = gcnew Label();
+			lblCurados->AutoSize = true;
+			lblCurados->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
+			lblCurados->ForeColor = Color::DarkBlue;
+			lblCurados->BackColor = Color::Transparent;
+			lblCurados->Text = "Curados: 0";
+			this->Controls->Add(lblCurados);
 			// 
 			// MyForm
 			// 
@@ -157,7 +172,6 @@ namespace ExamenFinalAlgoritmos {
 
 		enfermera->dibujar(buffer);
 
-
 		for (int i = vacunas->Count - 1; i >= 0; i--) {
 			if (vacunas[i]->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
 				vacunas->RemoveAt(i);
@@ -172,7 +186,22 @@ namespace ExamenFinalAlgoritmos {
 			CVacunaDisparada^ disparo = vacunasDisparadas[i];
 			disparo->mover();
 
-			// Si sale del mapa, lo eliminamos
+			bool colisiono = false;
+
+			for each(CEnfermo ^ enfermo in enfermos) {
+				if (!enfermo->estaCurado() &&
+					disparo->getRectangulo().IntersectsWith(enfermo->getRectangulo())) {
+
+					enfermo->curar(imagenCurado); // <- Cambia su sprite y estado
+					vacunasDisparadas->RemoveAt(i);
+					colisiono = true;
+					contadorCurados++;
+					break;
+				}
+			}
+
+			if (colisiono) continue;
+
 			if (disparo->getX() < 0 || disparo->getY() < 0 ||
 				disparo->getX() > this->ClientSize.Width ||
 				disparo->getY() > this->ClientSize.Height) {
@@ -185,11 +214,14 @@ namespace ExamenFinalAlgoritmos {
 			disparo->dibujar(buffer);
 		}
 
-		for each (CEnfermo ^ e in enfermos) {
+		for each(CEnfermo ^ e in enfermos) {
 			e->mover(this->ClientSize.Width, this->ClientSize.Height);
 			e->dibujar(buffer);
 
-			if (!enfermera->estaInvulnerable() && e->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
+			if (!enfermera->estaInvulnerable() &&
+				!e->estaCurado() &&
+				e->getRectangulo().IntersectsWith(enfermera->obtenerRectangulo())) {
+
 				enfermera->reducirVidas();
 				enfermera->activarInvulnerabilidad();
 			}
@@ -211,12 +243,30 @@ namespace ExamenFinalAlgoritmos {
 		lblVacunas->Location = Point((this->ClientSize.Width - lblVacunas->PreferredWidth) / 2, 10);
 		lblVacunas->Text = "Vacunas: " + inventarioVacunas;
 
+		lblCurados->Location = Point(10, 40); // debajo de lblContador
+		lblCurados->Text = "Curados: " + contadorCurados;
+
 		if (enfermera->getVidas() <= 0) {
 			timer1->Stop(); // Detener el juego
 
 			MessageBox::Show("VIRUS EXTREMO", "FIN DEL JUEGO", MessageBoxButtons::OK, MessageBoxIcon::Error);
 
 			Application::Exit(); // Cierra la aplicación
+			return;
+		}
+
+		bool todosCurados = true;
+		for each(CEnfermo ^ e in enfermos) {
+			if (!e->estaCurado()) {
+				todosCurados = false;
+				break;
+			}
+		}
+
+		if (todosCurados) {
+			timer1->Stop();
+			MessageBox::Show("MISION CUMPLIDA", "¡Felicidades!", MessageBoxButtons::OK, MessageBoxIcon::Information);
+			Application::Exit();
 			return;
 		}
 
