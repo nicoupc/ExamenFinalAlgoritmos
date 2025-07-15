@@ -31,7 +31,7 @@ public:
 		direccion = Ninguna;
 		ultimaDireccion = Abajo;
 
-		int columnas = 4;
+		int columnas = 3;
 		int filas = 4;
 
 		ancho = imagen->Width / columnas;
@@ -43,7 +43,7 @@ public:
 	{
 		// Si la enfermera se está moviendo
 		if (direccion != Ninguna) {
-			indiceX = (indiceX + 1) % 4;
+			indiceX = (indiceX + 1) % 3;
 			indiceY = static_cast<int>(direccion) - 1;
 			ultimaDireccion = direccion;
 
