@@ -1,6 +1,9 @@
 #pragma once
 
+#include <ctime>
+#include <cstdlib>
 #include "CBacteria.h"
+#include "COrgano.h"
 
 namespace Project1 {
 
@@ -20,6 +23,17 @@ namespace Project1 {
 	private:
 		List<CBacteria^>^ bacterias;
 		Bitmap^ spriteBacteria;
+		// Imágenes de órganos
+		List<COrgano^>^ organos;
+		Bitmap^ imgCorazonSano;
+		Bitmap^ imgCorazonInfectado;
+		Bitmap^ imgPulmonSano;
+		Bitmap^ imgPulmonInfectado;
+		Bitmap^ imgRinonSano;
+		Bitmap^ imgRinonInfectado;
+		Bitmap^ imgCerebroSano;
+		Bitmap^ imgCerebroInfectado;
+
 
 	public:
 		MyForm(void)
@@ -28,8 +42,28 @@ namespace Project1 {
 			//
 			//TODO: Add the constructor code here
 			//
-			spriteBacteria = gcnew Bitmap("Bacteria.png"); // Asegúrate de tener esta imagen
+			srand(static_cast<unsigned int>(time(0))); // Semilla para números aleatorios
+
+			spriteBacteria = gcnew Bitmap("Bacteria.png");
 			bacterias = gcnew List<CBacteria^>();
+
+			// Cargar imágenes
+			imgCorazonSano = gcnew Bitmap("Corazon.png");
+			imgCorazonInfectado = gcnew Bitmap("CorazonInfectado.png");
+			imgPulmonSano = gcnew Bitmap("Pulmon.png");
+			imgPulmonInfectado = gcnew Bitmap("PulmonInfectado.png");
+			imgRinonSano = gcnew Bitmap("Rinon.png");
+			imgRinonInfectado = gcnew Bitmap("RinonInfectado.png");
+			imgCerebroSano = gcnew Bitmap("Cerebro.png");
+			imgCerebroInfectado = gcnew Bitmap("CerebroInfectado.png");
+
+			// Crear órganos
+			organos = gcnew List<COrgano^>();
+			organos->Add(gcnew COrgano(imgCorazonSano, imgCorazonInfectado, this->ClientSize.Width, this->ClientSize.Height));
+			organos->Add(gcnew COrgano(imgPulmonSano, imgPulmonInfectado, this->ClientSize.Width, this->ClientSize.Height));
+			organos->Add(gcnew COrgano(imgRinonSano, imgRinonInfectado, this->ClientSize.Width, this->ClientSize.Height));
+			organos->Add(gcnew COrgano(imgCerebroSano, imgCerebroInfectado, this->ClientSize.Width, this->ClientSize.Height));
+
 		}
 
 	protected:
@@ -91,6 +125,10 @@ namespace Project1 {
 		BufferedGraphicsContext^ context = BufferedGraphicsManager::Current;
 		BufferedGraphics^ buffer = context->Allocate(g, this->ClientRectangle);
 		buffer->Graphics->DrawImage(this->BackgroundImage, 0, 0, this->ClientSize.Width, this->ClientSize.Height);
+
+		for each (COrgano ^ o in organos) {
+			o->dibujar(buffer->Graphics);
+		}
 
 		for each (CBacteria ^ b in bacterias) {
 			b->mover(this->ClientSize.Width, this->ClientSize.Height);

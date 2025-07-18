@@ -1,6 +1,4 @@
 #pragma once
-#include <ctime>
-#include <cstdlib>
 using namespace System;
 using namespace System::Drawing;
 

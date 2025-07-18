@@ -26,5 +26,8 @@
     <ClInclude Include="CBacteria.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="COrgano.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
