@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CBacteria.h"
+
 namespace Project1 {
 
 	using namespace System;
@@ -8,12 +10,17 @@ namespace Project1 {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Collections::Generic; // Para List<>
 
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
+	private:
+		List<CBacteria^>^ bacterias;
+		Bitmap^ spriteBacteria;
+
 	public:
 		MyForm(void)
 		{
@@ -21,6 +28,8 @@ namespace Project1 {
 			//
 			//TODO: Add the constructor code here
 			//
+			spriteBacteria = gcnew Bitmap("Bacteria.png"); // Asegúrate de tener esta imagen
+			bacterias = gcnew List<CBacteria^>();
 		}
 
 	protected:
@@ -34,12 +43,15 @@ namespace Project1 {
 				delete components;
 			}
 		}
+	private: System::ComponentModel::IContainer^ components;
+	private: System::Windows::Forms::Timer^ timer1;
+	protected:
 
 	private:
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -48,8 +60,15 @@ namespace Project1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
+			this->components = (gcnew System::ComponentModel::Container());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
+			this->timer1 = (gcnew System::Windows::Forms::Timer(this->components));
 			this->SuspendLayout();
+			// 
+			// timer1
+			// 
+			this->timer1->Enabled = true;
+			this->timer1->Tick += gcnew System::EventHandler(this, &MyForm::timer1_Tick);
 			// 
 			// MyForm
 			// 
@@ -57,12 +76,41 @@ namespace Project1 {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->ClientSize = System::Drawing::Size(797, 649);
+			this->ClientSize = System::Drawing::Size(1100, 800);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
+			this->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::presionarTecla);
+			this->KeyUp += gcnew System::Windows::Forms::KeyEventHandler(this, &MyForm::soltarTecla);
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
+	private: System::Void timer1_Tick(System::Object^ sender, System::EventArgs^ e) {
+
+		Graphics^ g = this->CreateGraphics();
+		BufferedGraphicsContext^ context = BufferedGraphicsManager::Current;
+		BufferedGraphics^ buffer = context->Allocate(g, this->ClientRectangle);
+		buffer->Graphics->DrawImage(this->BackgroundImage, 0, 0, this->ClientSize.Width, this->ClientSize.Height);
+
+		for each (CBacteria ^ b in bacterias) {
+			b->mover(this->ClientSize.Width, this->ClientSize.Height);
+			b->dibujar(buffer->Graphics);
+		}
+
+		buffer->Render();
+		delete buffer;
+		delete g;
+	}
+	private: System::Void soltarTecla(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+	}
+	private: System::Void presionarTecla(System::Object^ sender, System::Windows::Forms::KeyEventArgs^ e) {
+		if (e->KeyCode == Keys::E) {
+			int cantidadBacterias = 4 + rand() % 3; // entre 4 y 6
+
+			for (int i = 0; i < cantidadBacterias; i++) {
+				bacterias->Add(gcnew CBacteria(spriteBacteria, this->ClientSize.Width, this->ClientSize.Height));
+			}
+		}
+	}
 	};
 }
