@@ -25,6 +25,8 @@ public:
 
     void dibujar(Graphics^ g) {
         g->DrawImage(actual, x, y, ancho, alto);
+        // Dibujar un borde rojo para visualizar el rectángulo
+        //g->DrawRectangle(Pens::Red, x, y, ancho, alto);
     }
 
     Rectangle getRectangulo() {

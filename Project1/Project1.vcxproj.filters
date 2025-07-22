@@ -29,5 +29,11 @@
     <ClInclude Include="COrgano.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CDrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CProyectil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

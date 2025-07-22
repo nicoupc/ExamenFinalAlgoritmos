@@ -1,0 +1,3 @@
+Tiempo total (segundos): 31
+Total de Pastillas utilizadas: 18
+Total de Aspirinas utilizadas: 46

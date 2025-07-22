@@ -9,20 +9,36 @@ private:
     int dx, dy;
     int velocidad;
     int ancho, alto;
+    int columnas = 4;
+    int filas = 3;
+    int indiceX, indiceY;
+    int anchoOriginal, altoOriginal;
 
 public:
+    // Ayuda IA
     CBacteria(Bitmap^ imagen, int anchoForm, int altoForm) {
         sprite = imagen;
-        ancho = 40;
-        alto = 40;
+
+        columnas = 4;
+        filas = 3;
+
+        anchoOriginal = sprite->Width / columnas;
+        altoOriginal = sprite->Height / filas;
+
+        ancho = (int)(anchoOriginal * 0.3);
+        alto = (int)(altoOriginal * 0.3);
+
+        indiceX = rand() % columnas;
+        indiceY = rand() % filas;
+
         x = rand() % (anchoForm - ancho);
         y = rand() % (altoForm - alto);
-        velocidad = 6 + rand() % 5; // más rápido que el personaje
 
-        // Movimiento aleatorio inicial
-        dx = (rand() % 3 - 1) * velocidad; // -vel, 0, vel
+        velocidad = 6 + rand() % 5;
+
+        dx = (rand() % 3 - 1) * velocidad;
         dy = (rand() % 3 - 1) * velocidad;
-        if (dx == 0 && dy == 0) dx = velocidad; // evitar quedarse quieta
+        if (dx == 0 && dy == 0) dx = velocidad;
     }
 
     void mover(int anchoForm, int altoForm) {
@@ -34,11 +50,19 @@ public:
         if (y < 0 || y + alto > altoForm) dy = -dy;
     }
 
+    // Ayuda IA
     void dibujar(Graphics^ g) {
-        g->DrawImage(sprite, x, y, ancho, alto);
+        Rectangle origen = Rectangle(indiceX * anchoOriginal, indiceY * altoOriginal, anchoOriginal, altoOriginal);
+        Rectangle destino = Rectangle(x, y, ancho, alto);
+        g->DrawImage(sprite, destino, origen, GraphicsUnit::Pixel);
+
+        // Borde rojo opcional
+        //g->DrawRectangle(Pens::Red, x, y, ancho, alto);
     }
 
     Rectangle getRectangulo() {
         return Rectangle(x, y, ancho, alto);
     }
 };
+
+
